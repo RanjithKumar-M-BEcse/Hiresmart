@@ -3,25 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import RecruiterSidebar from '../../components/RecruiterSidebar';
 import Navbar from '../../components/Navbar';
 import { useAuth } from '../../context/AuthContext';
-import { mockJobs } from '../../data/mockData';
+import { loadJobs, saveJobs } from '../../data/jobsStore';
 
 export default function RecruiterDashboard() {
   const navigate = useNavigate();
   const { recruiterProfile } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  const [jobs, setJobs] = useState(() => {
-    try {
-      const saved = localStorage.getItem('hs_jobs');
-      return saved ? JSON.parse(saved) : mockJobs;
-    } catch { return mockJobs; }
-  });
+  const [jobs, setJobs] = useState(loadJobs);
 
   const handleDelete = (id) => {
     if (!window.confirm('Delete this job? This cannot be undone.')) return;
     const updated = jobs.filter((j) => j.id !== id);
     setJobs(updated);
-    localStorage.setItem('hs_jobs', JSON.stringify(updated));
+    saveJobs(updated);
   };
 
   const openCount   = jobs.filter((j) => j.status === 'OPEN').length;

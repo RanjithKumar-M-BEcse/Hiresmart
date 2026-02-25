@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RecruiterSidebar from '../../components/RecruiterSidebar';
 import Navbar from '../../components/Navbar';
-import { mockJobs } from '../../data/mockData';
+import { addJob } from '../../data/jobsStore';
 
 // MUST stay outside component — prevents focus-loss bug on every keystroke
 function Field({ label, hint, error, children }) {
@@ -71,9 +71,7 @@ export default function CreateJob() {
       applicants:  [],
     };
 
-    const saved    = localStorage.getItem('hs_jobs');
-    const existing = saved ? JSON.parse(saved) : mockJobs;
-    localStorage.setItem('hs_jobs', JSON.stringify([newJob, ...existing]));
+    addJob(newJob);
     setNewPublicId(publicId);
     setSubmitted(true);
   };

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import RecruiterSidebar from '../../components/RecruiterSidebar';
 import Navbar from '../../components/Navbar';
-import { mockJobs } from '../../data/mockData';
+import { loadJobs, saveJobs } from '../../data/jobsStore';
 
 // Status badge helper
 const StatusBadge = ({ status }) => {
@@ -122,12 +122,7 @@ export default function JobDetail() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showCloseModal, setShowCloseModal] = useState(false);
 
-  const [jobs, setJobs] = useState(() => {
-    try {
-      const saved = localStorage.getItem('hs_jobs');
-      return saved ? JSON.parse(saved) : mockJobs;
-    } catch { return mockJobs; }
-  });
+  const [jobs, setJobs] = useState(loadJobs);
 
   const job = jobs.find((j) => j.id === id);
 
@@ -173,7 +168,7 @@ export default function JobDetail() {
     };
 
     const updatedJobs = jobs.map((j) => j.id === job.id ? updatedJob : j);
-    localStorage.setItem('hs_jobs', JSON.stringify(updatedJobs));
+    saveJobs(updatedJobs);
     setJobs(updatedJobs);
     setShowCloseModal(false);
   };
